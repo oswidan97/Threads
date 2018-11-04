@@ -14,7 +14,7 @@ pair *getInput() {
 
 
     int rowACount = mADimensions[0] - '0', columnACount = mADimensions[2] - '0';
-    int **matrixA = (int **) malloc(columnACount * sizeof(int *));
+    int **matrixA = (int **) malloc(rowACount * sizeof(int *));
 
     char *row = malloc(MAX_COLUMNS);
 
@@ -30,7 +30,7 @@ pair *getInput() {
     fgets(mBDimensions, MAX_FIRST_LINE, input);
 
     int rowBCount = mADimensions[0] - '0', columnBCount = mADimensions[2] - '0';
-    int **matrixB = (int **) malloc(columnBCount * sizeof(int *));
+    int **matrixB = (int **) malloc(rowBCount * sizeof(int *));
 
 
     for (int i = 0; i < rowBCount; ++i) {
