@@ -4,9 +4,9 @@
 
 #ifndef SIMPLESHELL_INPUT_H
 #define SIMPLESHELL_INPUT_H
-#define MAX_FIRST_LINE 5
-#define MAX_ROWS 20
-#define MAX_COLUMNS 20
+#define MAX_FIRST_LINE 50
+#define MAX_ROWS 100
+#define MAX_COLUMNS 100
 #define delimiter " "
 
 #include "MatrixMultiplication.h"

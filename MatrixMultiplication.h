@@ -15,7 +15,7 @@ typedef struct matrix{ //representation of a matrix
 }matrix;
 typedef struct matrixMultiplicationArgs{
 
-    pair matrices;
+    pair *matrices;
     matrix* output;
     int row;
     int column;

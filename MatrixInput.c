@@ -10,19 +10,19 @@ pair *getInput() {
     FILE *input = fopen("./input.txt", "r");//open the input file
     char mADimensions[MAX_FIRST_LINE];//an array that will contain the dimensions of the first matrix
 
-    fgets(mADimensions, MAX_FIRST_LINE, input);
+    fgets(mADimensions, MAX_FIRST_LINE, input);//get dimensiions of first matrix
 
 
     int rowACount = mADimensions[0] - '0', columnACount = mADimensions[2] - '0';
-    int **matrixA = (int **) malloc(rowACount * sizeof(int *));
+    int **matrixA = (int **) malloc(rowACount * sizeof(int *)); //allocate first matrix
 
-    char *row = malloc(MAX_COLUMNS);
+    char *row = malloc(MAX_COLUMNS);//temp to get the line from the file in it
 
-    for (int i = 0; i < rowACount; ++i) {
+    for (int i = 0; i < rowACount; ++i) { //loop to read the matrix
 
         fgets(row, MAX_COLUMNS, input);
 
-        tokenizer(row, matrixA, i, columnACount);
+        tokenizer(row, matrixA, i, columnACount); //tokenize each line and add the result in matrixA
     }
 
     char mBDimensions[MAX_FIRST_LINE];
@@ -59,11 +59,11 @@ pair *getInput() {
 void tokenizer(char *row, int **matrix, int rowNum, int rowLen) {
 
 
-    row[rowLen * 2 - 1] = NULL;
-    matrix[rowNum] = malloc(sizeof(int) * MAX_COLUMNS);
+    row[rowLen * 2 - 1] = '\0'; //remove the last '\n' in the line
+    matrix[rowNum] = malloc(sizeof(int) * rowLen);//allocate the columns of the first row of the matrix
 
     int i = 0, j = 0;
-    while (row[i] != NULL) {
+    while (row[i] != '\0') {//loop to remove spaces and add in the matrix the numbers
 
         if (row[i] != ' ') {
             matrix[rowNum][j] = row[i] - '0';
@@ -72,7 +72,7 @@ void tokenizer(char *row, int **matrix, int rowNum, int rowLen) {
 
         i++;
     }
-    matrix[rowNum][i] = NULL;
+
 }
 
 void printMatrix(int **matrix, int rowCount, int columnCount) {
