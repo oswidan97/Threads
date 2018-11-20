@@ -20,6 +20,8 @@ typedef struct matrixMultiplicationArgs{
     int row;
     int column;
 }matrixMultiplicationArgs;
-void executeElementWise();
-void* getProductElement(void* args);
+void executeElementWise(pair *matrices,clock_t beginTime);
+void* getOutputElement(void *args);
+void executeRowWise(pair *matrices,clock_t beginTime);
+void* getOutputRow(void* args);
 #endif //THREADS_MATRIXMULTIPLICATION_H

@@ -1,10 +1,24 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include "MatrixInput.h"
-#include "MatrixMultiplication.h"
+#include <pthread.h>
+#include "MatrixIO.h"
 
 
 int main() {
-    executeElementWise();
+    pair* matrices=getInput();
+    clock_t beginElementWise=clock();
+    executeElementWise(matrices,beginElementWise);
+
+
+    clock_t beginRowWise=clock();
+    executeRowWise(matrices,beginRowWise);
+
+
+
+    free(((matrix*)(matrices->first))->mat);
+    free(((matrix*)(matrices->second))->mat);
+    free(matrices->first);
+    free(matrices->second);
     return 0;
+
 }

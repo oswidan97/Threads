@@ -9,8 +9,9 @@
 #define MAX_COLUMNS 100
 #define delimiter " "
 
+#include <stdlib.h>
 #include "MatrixMultiplication.h"
 pair* getInput();
 void tokenizer(char * row,int **matrix,int rowNum,int rawLen);
-void printMatrix(int **matrix,int rowCount,int columnCount);
+void printMatrix(int **matrix,int rowCount,int columnCount,clock_t time,int procedureNumber);
 #endif //SIMPLESHELL_INPUT_H

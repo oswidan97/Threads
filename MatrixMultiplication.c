@@ -2,16 +2,16 @@
 #include <stdio.h>
 #include <pthread.h>
 #include <zconf.h>
-#include "MatrixInput.h"
+#include "MatrixIO.h"
 
 //
 // Created by omar_swidan on 03/11/18.
 //
-void executeElementWise() {
-    pair *matrices = getInput();
+void executeElementWise(pair *matrices,clock_t beginTime) {
 
 
-    matrix *output = (matrix*)malloc(sizeof(matrix)); //allocate the iutout matrix as a struct matrix
+
+    matrix *output = (matrix*)malloc(sizeof(matrix)); //allocate the output matrix as a struct matrix
 
 
     int outputColumnCount = ((matrix *) (matrices->first))->rowCount;
@@ -19,7 +19,7 @@ void executeElementWise() {
 
     int **outMatrix = (int**)malloc(outputRowCount * sizeof(int *)); //allocate the number of rows of the output matrix 2d array
 
-    //printf("%d %d",outputColumnCount,outputRowCount);
+
     for (int i = 0; i < outputRowCount; ++i)
         outMatrix[i]=(int *)malloc(outputColumnCount* sizeof(int));
 
@@ -30,11 +30,12 @@ void executeElementWise() {
     output->columnCount = outputColumnCount;
 
 
-    pthread_t tid[outputRowCount*outputRowCount];
+    pthread_t tid[outputRowCount*outputRowCount];//array of thread ids
 
+    //array of arguments each for a thread
     matrixMultiplicationArgs **args=(matrixMultiplicationArgs**)malloc(outputRowCount*outputColumnCount*sizeof(matrixMultiplicationArgs*));
 
-
+    //initialize each argument and activate the threads
     for (int i = 0; i < outputRowCount; ++i) {
         for (int j = 0; j < outputColumnCount; ++j) {
             args[i*outputColumnCount+j]=(matrixMultiplicationArgs*)malloc(sizeof(matrixMultiplicationArgs));
@@ -42,7 +43,8 @@ void executeElementWise() {
             args[i*outputColumnCount+j]->output = output;
             args[i*outputColumnCount+j]->row = i;
             args[i*outputColumnCount+j]->column=j;
-            pthread_create(&tid[i*outputColumnCount+j], NULL, getProductElement, (void *) args[i*outputColumnCount+j]);
+            pthread_create(&tid[i * outputColumnCount + j], NULL, getOutputElement,
+                           (void *) args[i * outputColumnCount + j]);
         }
     }
 
@@ -51,45 +53,130 @@ void executeElementWise() {
 
 
 
-    printMatrix(outMatrix,outputRowCount,outputColumnCount);
 
 
+    clock_t endElementWise=clock();
+    printMatrix(outMatrix,outputRowCount,outputColumnCount,endElementWise-beginTime,1);
     free(outMatrix);
     free(output);
-    free(((matrix*)(matrices->first))->mat);
-    free(((matrix*)(matrices->second))->mat);
-    free(matrices->first);
-    free(matrices->second);
-    free(matrices);
     for (int l = 0; l < outputRowCount*outputColumnCount; ++l)
         free(args[l]);
     free(args);
-    pthread_exit(NULL);
+
+
+
+    return;
 
 }
-void* getProductElement(void* args){
+void* getOutputElement(void *args){
     matrixMultiplicationArgs *matArgs=(matrixMultiplicationArgs*)args;
-    //printf("kk");
+
     int outputRowCount=matArgs->output->rowCount;
 
 
     int **matrix1=((matrix*)matArgs->matrices->first)->mat;
     int **matrix2= ((matrix*)matArgs->matrices->second)->mat;
     int **output=  matArgs->output->mat;
+    int mat1ColumnCount=((matrix*)(matArgs->matrices->first))->columnCount;
+
 
     int sum=0;//variable to hold the sum after each iteration
-    for (int i = 0; i < outputRowCount; ++i)//calculate element
+    for (int i = 0; i < mat1ColumnCount; ++i)//calculate element
         sum+=matrix1[matArgs->row][i]*matrix2[i][matArgs->column];
-    printf("element %d is %d\n",(matArgs->row)*outputRowCount+matArgs->column,sum);
 
 
 
     output[matArgs->row][matArgs->column]=sum;
 
 
-   // printf("%d",output[matArgs->row][matArgs->column]);
+    pthread_exit(NULL);
+
+}
+
+void executeRowWise(pair *matrices,clock_t beginTime) {
+
+    matrix *output = (matrix*)malloc(sizeof(matrix)); //allocate the output matrix as a struct matrix
+
+
+    int outputColumnCount = ((matrix *) (matrices->first))->rowCount;
+    int outputRowCount = ((matrix *) (matrices->second))->columnCount;
+
+    int **outMatrix = (int**)malloc(outputRowCount * sizeof(int *)); //allocate the number of rows of the output matrix 2d array
+
+
+    for (int i = 0; i < outputRowCount; ++i)
+        outMatrix[i]=(int *)malloc(outputColumnCount* sizeof(int));
+
+
+    //add the attributes of the output struct matrix
+    output->mat = outMatrix;
+    output->rowCount = outputRowCount;
+    output->columnCount = outputColumnCount;
+
+
+    pthread_t tid[outputRowCount];
+
+    matrixMultiplicationArgs **args=(matrixMultiplicationArgs**)malloc(outputRowCount*sizeof(matrixMultiplicationArgs*));
+
+    //initialize each argument and activate the threads
+    for (int i = 0; i < outputRowCount; ++i) {
+            args[i]=(matrixMultiplicationArgs*)malloc(sizeof(matrixMultiplicationArgs));
+            args[i]->matrices = matrices;
+            args[i]->output = output;
+            args[i]->row = i;
+            args[i]->column=-1;
+            pthread_create(&tid[i], NULL, getOutputRow, (void *) args[i]);
+
+    }
+
+    for (int k = 0; k < outputRowCount; ++k)//wait for all threads to finish execution
+        pthread_join(tid[k], NULL);
+
+
+
+    clock_t endRowWise=clock();
+    printMatrix(outMatrix,outputRowCount,outputColumnCount,endRowWise-beginTime,2);
+
+    free(outMatrix);
+    free(output);
+    free(matrices);
+    for (int l = 0; l < outputRowCount; ++l)
+        free(args[l]);
+    free(args);
+
+
+
+
+    return;
+
+
+}
+
+void* getOutputRow(void* args) {
+    matrixMultiplicationArgs *matArgs=(matrixMultiplicationArgs*)args;
+
+    int outputRowCount=matArgs->output->rowCount;
+
+
+    int **matrix1=((matrix*)matArgs->matrices->first)->mat;
+    int **matrix2= ((matrix*)matArgs->matrices->second)->mat;
+    int **output=  matArgs->output->mat;
+    int mat1ColumnCount=((matrix*)(matArgs->matrices->first))->columnCount;
+    int mat2ColumnCount=((matrix*)(matArgs->matrices->second))->columnCount;
+    int sum=0;//variable to hold the sum after each iteration
+
+        for (int i = 0; i < mat2ColumnCount; ++i) {//calculate a row of the output matrix
+            sum=0;
+            for (int j = 0; j <mat1ColumnCount ; ++j)
+                sum += matrix1[matArgs->row][j] * matrix2[j][i];//matArgs->row is the row of the first matrix used in this calculation
+            output[matArgs->row][i]=sum;
+        }
+
+
+
+
+
 
 
     pthread_exit(NULL);
-
 }

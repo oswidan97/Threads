@@ -1,11 +1,10 @@
 
-#include "MatrixInput.h"
+#include "MatrixIO.h"
 #include <stdio.h>
-#include <string.h>
-#include <stdlib.h>
+#include <bits/time.h>
 
 
-//TODO don't forget to free the pointer !!!!
+
 pair *getInput() {
     FILE *input = fopen("./input.txt", "r");//open the input file
     char mADimensions[MAX_FIRST_LINE];//an array that will contain the dimensions of the first matrix
@@ -75,12 +74,16 @@ void tokenizer(char *row, int **matrix, int rowNum, int rowLen) {
 
 }
 
-void printMatrix(int **matrix, int rowCount, int columnCount) {
+void printMatrix(int **matrix, int rowCount, int columnCount,clock_t time,int procedureNumber) {
+    FILE* outFile=fopen("./output","a");
+
     for (int i = 0; i < rowCount; ++i) {
         for (int j = 0; j < columnCount; ++j) {
-            printf("%d ", matrix[i][j]);
+            fprintf(outFile,"%d ", matrix[i][j]);
         }
-        printf("\n");
+        fprintf(outFile,"\n");
     }
+
+    fprintf(outFile, "End%d %f milliseconds\n", procedureNumber, (double)time * 1000 / CLOCKS_PER_SEC);
 
 }
