@@ -12,6 +12,7 @@
 #include <stdlib.h>
 #include "MatrixMultiplication.h"
 pair* getInput();
-void tokenizer(char * row,int **matrix,int rowNum,int rawLen);
-void printMatrix(int **matrix,int rowCount,int columnCount,clock_t time,int procedureNumber);
+void tokenizer(char * row,int **matrix,int rowNum,int columnCount);
+void printMatrixInFile(int **matrix, int rowCount, int columnCount, clock_t time, int procedureNumber);
+void printMatrix(int **matrix, int rowCount, int columnCount);
 #endif //SIMPLESHELL_INPUT_H

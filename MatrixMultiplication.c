@@ -56,7 +56,7 @@ void executeElementWise(pair *matrices,clock_t beginTime) {
 
 
     clock_t endElementWise=clock();
-    printMatrix(outMatrix,outputRowCount,outputColumnCount,endElementWise-beginTime,1);
+    printMatrixInFile(outMatrix, outputRowCount, outputColumnCount, endElementWise - beginTime, 1);
     free(outMatrix);
     free(output);
     for (int l = 0; l < outputRowCount*outputColumnCount; ++l)
@@ -70,8 +70,6 @@ void executeElementWise(pair *matrices,clock_t beginTime) {
 }
 void* getOutputElement(void *args){
     matrixMultiplicationArgs *matArgs=(matrixMultiplicationArgs*)args;
-
-    int outputRowCount=matArgs->output->rowCount;
 
 
     int **matrix1=((matrix*)matArgs->matrices->first)->mat;
@@ -135,7 +133,7 @@ void executeRowWise(pair *matrices,clock_t beginTime) {
 
 
     clock_t endRowWise=clock();
-    printMatrix(outMatrix,outputRowCount,outputColumnCount,endRowWise-beginTime,2);
+    printMatrixInFile(outMatrix, outputRowCount, outputColumnCount, endRowWise - beginTime, 2);
 
     free(outMatrix);
     free(output);

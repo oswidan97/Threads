@@ -3,8 +3,13 @@
 #include <pthread.h>
 #include "MatrixIO.h"
 
-
+void matrixMultiplicationCompare();
 int main() {
+    matrixMultiplicationCompare();
+    return 0;
+
+}
+void matrixMultiplicationCompare(){
     pair* matrices=getInput();
     clock_t beginElementWise=clock();
     executeElementWise(matrices,beginElementWise);
@@ -19,6 +24,4 @@ int main() {
     free(((matrix*)(matrices->second))->mat);
     free(matrices->first);
     free(matrices->second);
-    return 0;
-
 }
