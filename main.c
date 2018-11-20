@@ -1,11 +1,17 @@
+//
+// Created by omar_swidan on 20/11/18.
+//
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <pthread.h>
 #include "MatrixIO.h"
+#include "MergeSort.h"
 
 void matrixMultiplicationCompare();
 int main() {
     matrixMultiplicationCompare();
+    execMergeSort();
     return 0;
 
 }
