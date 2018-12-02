@@ -20,7 +20,7 @@ void executeElementWise(pair *matrices,clock_t beginTime) {
     int **outMatrix = (int**)malloc(outputRowCount * sizeof(int *)); //allocate the number of rows of the output matrix 2d array
 
 
-    for (int i = 0; i < outputRowCount; ++i)
+    for (int i = 0; i < outputRowCount; ++i)//alloctae the columns of the output matrix
         outMatrix[i]=(int *)malloc(outputColumnCount* sizeof(int));
 
 
@@ -32,7 +32,7 @@ void executeElementWise(pair *matrices,clock_t beginTime) {
 
     pthread_t tid[outputRowCount*outputRowCount];//array of thread ids
 
-    //array of arguments each for a thread
+    //array of arguments each argument struct for a thread
     matrixMultiplicationArgs **args=(matrixMultiplicationArgs**)malloc(outputRowCount*outputColumnCount*sizeof(matrixMultiplicationArgs*));
 
     //initialize each argument and activate the threads
@@ -156,9 +156,9 @@ void* getOutputRow(void* args) {
     int outputRowCount=matArgs->output->rowCount;
 
 
-    int **matrix1=((matrix*)matArgs->matrices->first)->mat;
-    int **matrix2= ((matrix*)matArgs->matrices->second)->mat;
-    int **output=  matArgs->output->mat;
+    int **matrix1=((matrix*)matArgs->matrices->first)->mat;//first matrix
+    int **matrix2= ((matrix*)matArgs->matrices->second)->mat;//second matrix
+    int **output=  matArgs->output->mat;//output matrix
     int mat1ColumnCount=((matrix*)(matArgs->matrices->first))->columnCount;
     int mat2ColumnCount=((matrix*)(matArgs->matrices->second))->columnCount;
     int sum=0;//variable to hold the sum after each iteration

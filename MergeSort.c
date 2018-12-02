@@ -12,18 +12,22 @@
 void execMergeSort(){
 
     pair* inputPair=getUnsortedArray();
-    int *arr=inputPair->first;
-    mergeSortArgs args;
+    int *arr=inputPair->first; //the input array
+
+    mergeSortArgs args; //arguments struct
     args.arr=arr;
     args.low=0;
-    args.high=(int)inputPair->second-1;
+    args.high=(int)inputPair->second-1; //last element of the array
+
     pthread_t tid;
-    pthread_create(&tid,NULL,mergeSort,&args);
+    pthread_create(&tid,NULL,mergeSort,&args);//call the mergeSort function for the first time
     pthread_join(tid,NULL);
 
-    for (int i = 0; i < (int)inputPair->second; ++i) {
+    for (int i = 0; i < (int)inputPair->second; ++i)
         printf("%d ",arr[i]);
-    }
+    free(arr);
+    free(inputPair);
+
 }
 pair *getUnsortedArray() {
     FILE* inputFile=fopen("./inputMerge","r");//open the input file
@@ -93,11 +97,11 @@ void* mergeSort(void* args) {
 
         int mid = sortArgs->low+(sortArgs->high-sortArgs->low)/2;
 
-        mergeSortArgs args1={sortArgs->arr, sortArgs->low, mid};
+        mergeSortArgs args1={sortArgs->arr, sortArgs->low, mid};//initialize struct
         pthread_t tid1;
         pthread_create(&tid1,NULL,mergeSort,&args1);
 
-        mergeSortArgs args2={sortArgs->arr, mid+1, sortArgs->high};
+        mergeSortArgs args2={sortArgs->arr, mid+1, sortArgs->high};//initialize struct
         pthread_t tid2;
         pthread_create(&tid2,NULL,mergeSort,&args2);
 
